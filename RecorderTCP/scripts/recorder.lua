@@ -1,5 +1,5 @@
 
---Start of Global Scope--------------------------------------------------------- 
+--Start of Global Scope---------------------------------------------------------
 json = require "json"
 
 --servce functions for acces via the user interface
@@ -79,7 +79,6 @@ currentDataFormat = "JSON"
 viewer1 = View.create()
 viewer1:setID("Viewer1")
 
---@startRecording()
 function startRecording()
   recorder:setMetaInfo("Comment", "text/plain", "This is a sample for the recording API!")
   recorder:setMetaInfo("Comment2", "application/octet-stream", "Example", "Find a sample for how to use recording here!")
@@ -89,13 +88,11 @@ function startRecording()
   print("Recording started. Recording will be saved to " .. recFile)
 end
 
---@stopRecording()
 function stopRecording()
   recorder:stop()
   print("Recording stopped")
 end
 
---@startPlayback()
 function startPlayback()
   play:setTCPIPSource(playIP, playPort)
   play:register("OnPlaybackStopped", "restart")
@@ -104,27 +101,27 @@ function startPlayback()
   print("Playback started")
 end
 
---@stopPlayback()
 function stopPlayback()
   canceled = true
   play:stop()
   print("Playback stopped")
 end
 
---@handleOnNewSensorData(tsstring:string,framenostring:string)
+---@param tsstring string
+---@param framenostring string
 function handleOnNewSensorData(tsstring,framenostring)
   sData = "FrameNo: " .. framenostring .. " Timestamp: " .. tsstring
   Script.notifyEvent("OnSensorDataUpdate",sData)
 end
 local regSuccess = Script.register("DataSource.OnNewSensorData", handleOnNewSensorData)
 
---@setDataFormat(format:string)
+---@param format string
 function setDataFormat(format)
   recorder:setDataFormat(format)
   currentDataFormat = format
 end
 
---@getDataFormats():string[]
+---@return string[] res
 function getDataFormats()
   local formats = Engine.getEnumValues("Object.DataFormat")
   local res = "["
@@ -138,12 +135,12 @@ function getDataFormats()
   return res
 end
 
---@getCurrentDataFormat():string[]
+---@return string[] currentDataFormat
 function getCurrentDataFormat()
   return currentDataFormat
 end
 
---@getProviderString():string
+---@return string provString
 function getProviderString()
   local provString = "["
   for key,value in pairs(provs) do
@@ -170,8 +167,8 @@ function getProviderString()
   provString = provString .. "]"
   return provString
 end
-  
---@setCurrentProviders(providers:auto)
+
+---@param providers auto
 function setCurrentProviders(providers)
   local prvTbl = json.decode(providers)
   local newProviders = {}
@@ -205,87 +202,86 @@ function setCurrentProviders(providers)
   Script.notifyEvent("ProvidersChanged", getProviderString())
 end
 
---@getRecMode():int
+---@param int recMode
 function getRecMode()
   return recMode
 end
 
---@setRecMode(mode:int)
+---@param mode int
 function setRecMode(mode)
   recMode = mode
   print(recmodes[mode])
   recorder:setMode(recmodes[mode], modeParam)
 end
 
---@getModeParam():int
+---@param int modeParam
 function getModeParam()
   return modeParam
 end
 
---@setModeParam(param:int)
+---@param param int
 function setModeParam(param)
   modeParam = param
   recorder:setMode(recmodes[recMode], modeParam)
 end
 
---@getRecIP():string
+---@param string recIP
 function getRecIP()
   return recIP
 end
 
---@setRecIP(ip:string)
+---@param ip string
 function setRecIP(ip)
   recIP = ip
 end
 
---@getRecPort():int
+---@return int recPort
 function getRecPort()
   return recPort
 end
 
---@setRecPort(port:int)
+---@param port int
 function setRecPort(port)
   recPort = port
 end
 
---@getPlayIP():string
+---@return string playIP
 function getPlayIP()
   return playIP
 end
 
---@setPlayIP(ip:string)
+---@param ip string
 function setPlayIP(ip)
   playIP = ip
 end
 
---@getPlayPort():int
+---@return int playPort
 function getPlayPort()
   return playPort
 end
 
---@setPlayPort(port:int)
+---@param port int
 function setPlayPort(port)
   playPort = port
 end
 
---@getLoop():boolean
+---@param boolean loop
 function getLoop()
   return loop
 end
 
---@setLoop(doLoop:boolean)
+---@param doLoop boolean
 function setLoop(doLoop)
   loop = doLoop
 end
 
---@restart()
 function restart()
   if loop and not canceled then
     startPlayback()
   end
 end
 
---@toggleDataSource(running:boolean)
+---@param running boolean
 function toggleDataSource(running)
   if running then
     dataSourceRunning = true
@@ -296,56 +292,56 @@ function toggleDataSource(running)
   end
 end
 
---@getDataSourceRunning():boolean
+---@return boolean dataSourceRunning
 function getDataSourceRunning()
   return dataSourceRunning
 end
 
---@getDataSourceMode():String
+---@return String dataSourceMode
 function getDataSourceMode()
   return dataSourceMode
 end
 
---@setDataSourceMode(mode:String)
+---@param mode String
 function setDataSourceMode(mode)
   dataSourceMode = mode
   play:setDataSourceMode(mode)
 end
 
---@getPlaybackMode():String
+---@return String playmode
 function getPlaybackMode()
   return playmode
 end
 
---@setPlaybackMode(mode:String)
+---@param mode String
 function setPlaybackMode(mode)
   playmode = mode
   play:setPlayBackMode(mode)
 end
 
---@getDataSourceLookupMode():String
+---@return String dataSourceLookupMode
 function getDataSourceLookupMode()
   return dataSourceLookupMode
 end
 
---@setDataSourceLookupMode(mode:String)
+---@param mode String
 function setDataSourceLookupMode(mode)
   dataSourceLookupMode = mode
   play:setDataSourceLookupMode(mode)
 end
 
---@getSpeedupFactor():int
+---@param int speedupFactor
 function getSpeedupFactor()
   return speedupFactor
 end
 
---@setSpeedupFactor(factor:int)
+---@param factor int
 function setSpeedupFactor(factor)
   speedupFactor = factor
   play:setSpeedUpFactor(factor)
 end
 
---@getDataSourceModes():String
+---@return String res
 function getDataSourceModes()
   local res = "["
   for key,value in pairs(dataSourceModes) do
@@ -358,7 +354,7 @@ function getDataSourceModes()
   return res
 end
 
---@getPlaybackModes():String
+---@return String res
 function getPlaybackModes()
   local res = "["
   for key,value in pairs(playmodes) do
@@ -371,7 +367,7 @@ function getPlaybackModes()
   return res
 end
 
---@getDataSourceLookupModes():String
+---@return String res
 function getDataSourceLookupModes()
   local res = "["
   for key,value in pairs(dataSourceLookupModes) do
